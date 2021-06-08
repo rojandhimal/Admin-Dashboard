@@ -1,7 +1,8 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Container, Form, Row , Button} from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
-import { login } from '../../actions';
+import { useDispatch, useSelector } from 'react-redux';
+import { Redirect } from 'react-router-dom';
+import { isUserLoggedIn, login } from '../../actions';
 import Layout from '../../components/Layouts';
 import Input from '../../components/UI';
 
@@ -13,15 +14,30 @@ import Input from '../../components/UI';
 
 const Signin = (props) => {
 
+    const [email, setEmail] = useState('')
+    const [password, setPassword] = useState('')
+    const [error, setError] = useState('')
     const dispatch = useDispatch();
+    const auth = useSelector(state => state.auth);
+
+    useEffect(() => {
+        if(!auth.authenticate){
+            dispatch(isUserLoggedIn);
+        }
+        
+    },[]);
 
     const userLogin = (e) => {
         e.preventDefault();
         const user = {
-            email:"rojan@gmail.com",
-            password:'rojan123'
+            email:email,
+            password:password
         }
         dispatch(login(user));
+    }
+
+    if(auth.authenticate){
+        return <Redirect to='/' />
     }
     return (
         <Layout>
@@ -32,19 +48,19 @@ const Signin = (props) => {
                         <Input 
                             label ="Email"
                             placeholder="abc@gmail.com"
-                            value=''
+                            value={email}
                             id='email'
                             type='email'
-                            onChange={() => {}}
+                            onChange={(e) => {setEmail(e.target.value)}}
                             />
 
                         <Input 
                             label ="Password"
                             placeholder="Password"
-                            value=''
+                            value={password}
                             id='password'
                             type='password'
-                            onChange={() => {}}
+                            onChange={(e) => {setPassword(e.target.value)}}
                             />
                         
                         <Button variant="primary" type="submit">
