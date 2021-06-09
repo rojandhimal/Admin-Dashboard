@@ -1,13 +1,44 @@
 import { Button } from 'bootstrap';
 import React from 'react'
 import { Container, Form, FormControl, Nav, Navbar, NavDropdown } from 'react-bootstrap'
+import { useDispatch, useSelector } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import { signout } from '../../actions/auth.actions';
 
 const Header = () => {
-    return (
+    const auth = useSelector(state => state.auth);
+    const dispatch = useDispatch()
+    const logout = () =>{
+        console.log("logout clicked")
+        dispatch(signout())
+    }
+    
 
-        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-            <Container>
+    const renderLoggedInLinks = () => {
+        return (
+            <Nav>
+                <li className='nav-item'>
+                    <span className='nav-link' onClick={logout}>Signout</span>
+                </li>
+            </Nav>
+        );
+    };
+
+    const renderNonLoggedInLinks = () => {
+        return(
+            <Nav>
+                <li className='nav-tiem'>
+                    <NavLink to='/signin' className='nav-link'>Signin</NavLink>
+                </li>
+                <li className='nav-tiem'>
+                    <NavLink to='/signup' className='nav-link'>Signup</NavLink>
+                </li>
+            </Nav>
+        );
+    };
+    return (
+        <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" style={{zIndex:1}}>
+            <Container fluid>
                 <Navbar.Brand href="/">Admin Dashboard</Navbar.Brand>
                 <Navbar.Toggle aria-controls="responsive-navbar-nav" />
                 <Navbar.Collapse id="responsive-navbar-nav">
@@ -22,15 +53,7 @@ const Header = () => {
                             <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
                         </NavDropdown> */}
                     </Nav>
-                    <Nav>
-                        <li className='nav-tiem'>
-                            <NavLink to='/signin' className='nav-link'>Signin</NavLink>
-                        </li>
-                        <li className='nav-tiem'>
-                            <NavLink to='/signup' className='nav-link'>Signup</NavLink>
-                        </li>
-
-                    </Nav>
+                    {auth.authenticate ? (renderLoggedInLinks()) : (renderNonLoggedInLinks())}
                 </Navbar.Collapse>
             </Container>
         </Navbar>

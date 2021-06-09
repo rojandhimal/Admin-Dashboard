@@ -14,30 +14,22 @@ import Input from '../../components/UI';
 
 const Signin = (props) => {
 
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const dispatch = useDispatch();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const auth = useSelector(state => state.auth);
-
-    useEffect(() => {
-        if(!auth.authenticate){
-            dispatch(isUserLoggedIn);
-        }
-        
-    },[]);
+    const dispatch = useDispatch();
 
     const userLogin = (e) => {
         e.preventDefault();
         const user = {
-            email:email,
-            password:password
+            email, password
         }
         dispatch(login(user));
     }
 
     if(auth.authenticate){
-        return <Redirect to='/' />
+        return <Redirect to={`/`} />
     }
     return (
         <Layout>
